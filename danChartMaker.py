@@ -124,7 +124,7 @@ class Chart:
 		self.bpm = re.findall(bpattern, header)[0]
 		
 		# Wave
-		wpattern = re.compile(r"^WAVE:(\S+)", re.MULTILINE)
+		wpattern = re.compile(r"^WAVE:(.*)", re.MULTILINE)
 		self.wave = re.findall(wpattern, header)[0]
 		
 		# Offset
