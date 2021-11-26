@@ -43,10 +43,9 @@ class ExamPart:
 
 class Exam:
 	"""Dan exam informations"""
-	Parts = []
-	
 	def __init__(self, config, songC):
 		self.configuration = config
+		self.Parts = []
 		for i in range(songC):
 			self.Parts.append(ExamPart())
 			
@@ -70,11 +69,12 @@ DifficultyDict = {
 
 class Difficulty:
 	"""Chart difficulty informations"""
-	body = ""
-	starRating = 0
-	balloon = ""
 	
 	def __init__(self, contents):
+		self.body = ""
+		self.starRating = 0
+		self.balloon = ""
+	
 		# Star rating
 		srpattern = re.compile(r"^LEVEL:(\S+)", re.MULTILINE)
 		self.starRating = re.findall(srpattern, contents)[0]
@@ -89,22 +89,50 @@ class Difficulty:
 			
 class Chart:
 	"""Chart general informations"""
-	difficulties = [None, None, None, None, None]
-	title = ""
-	subtitle = ""
-	demoStart = 0
-	bpm = 140
-	wave = ""
-	
+
 	def __init__(self, contents):
 		self.raw = contents
+		self.difficulties = [None, None, None, None, None]
+		self.title = ""
+		self.subtitle = ""
+		self.demoStart = 0
+		self.bpm = 140
+		self.wave = ""
+		self.offset = 0
 		
 	def partition(self):
+		# General split
 		pattern = re.compile(r"(?:^TITLE:|^COURSE:)(?:.|\n(?!COURSE))*", re.MULTILINE)
 		matchlist = re.findall(pattern, self.raw)
 		
+		# Header extraction
 		header = matchlist.pop(0)
 		
+		# Title
+		tpattern = re.compile(r"^TITLE:(.*)", re.MULTILINE)
+		self.title = re.findall(tpattern, header)[0]
+		
+		# Demo start
+		dspattern = re.compile(r"^DEMOSTART:(\S+)", re.MULTILINE)
+		self.demoStart = re.findall(dspattern, header)[0]
+		
+		# Bpm
+		bpattern = re.compile(r"^BPM:(\S+)", re.MULTILINE)
+		self.bpm = re.findall(bpattern, header)[0]
+		
+		# Wave
+		wpattern = re.compile(r"^WAVE:(\S+)", re.MULTILINE)
+		self.wave = re.findall(wpattern, header)[0]
+		
+		# Offset
+		opattern = re.compile(r"^OFFSET:(\S+)", re.MULTILINE)
+		self.offset = float(re.findall(opattern, header)[0]) * -1;
+		
+		# Subtitle
+		stpattern = re.compile(r"^SUBTITLE:--(.*)", re.MULTILINE)
+		self.subtitle = re.findall(stpattern, header)[0]
+		
+		# Extract difficulties
 		for e in matchlist:
 			diffpattern = re.compile(r"^COURSE:(\S+)", re.MULTILINE)
 			diff = DifficultyDict[re.findall(diffpattern, e)[0].lower()]
@@ -148,6 +176,62 @@ if __name__ == "__main__":
 		else:
 			exams.append(Exam(1, songCount))
 	
+	# Dan header
+	eprint("// Enter the dan chart name : ")
+	chartName = input()
+	
+	# Global exams
+	nonGlobalIndexes = []
+	globalIndexes = []
+	for i in range(examCount):
+		if (exams[i].configuration == 1):
+			if (i == 0):
+				eprint("// Enter the Gauge exam red condition [0-100] : ")
+				exams[i].Parts[0].redPass = clamp(0, int(input()), 100)
+				eprint(f"// Enter the Gauge exam gold condition [{exams[i].Parts[0].redPass}-100] : ")
+				exams[i].Parts[0].goldPass = clamp(exams[i].Parts[0].redPass, int(input()), 100)
+			else:
+				eprint(f"// Enter the exam {i + 1} type : ")
+				eprint("// 1 : Perfect count")
+				eprint("// 2 : Good count")
+				eprint("// 3 : Bad count")
+				eprint("// 4 : Score")
+				eprint("// 5 : Rolls")
+				eprint("// 6 : Hit notes")
+				eprint("// 7 : Combo")
+				eprint("// 8 : Accuracy")
+				tmp = clamp(1, int(input()), 8)
+				exams[i].Parts[0].examType = ExamTypesDict[tmp]
+				eprint(f"// Enter the exam {i + 1} range : ")
+				eprint("// 1 : More")
+				eprint("// 2 : Less")
+				tmp = clamp(1, int(input()), 2)
+				exams[i].Parts[0].examRange = ExamRangeDict[tmp]
+				eprint(f"// Enter the exam {i + 1} red condition [0-[ : ")
+				exams[i].Parts[0].redPass = clamp(0, int(input()), 999999)
+				if (exams[i].Parts[0].examRange == "m"):
+					eprint(f"// Enter the exam {i + 1} gold condition [{exams[i].Parts[0].redPass}-[ : ")
+					exams[i].Parts[0].goldPass = clamp(exams[i].Parts[0].redPass, int(input()), 999999)
+				else:
+					eprint(f"// Enter the exam {i + 1} gold condition [0-{exams[i].Parts[0].redPass}] : ")
+					exams[i].Parts[0].goldPass = clamp(0, exams[i].Parts[0].redPass, int(input()))
+			globalIndexes.append(i)
+		else:
+			nonGlobalIndexes.append(i)
+	
+	# Display Header
+	
+	print(f"TITLE:{chartName}")
+	print(f"BPM:{charts[0].bpm}")
+	print(f"WAVE:{charts[0].wave}")
+	print(f"DEMOSTART:{charts[0].demoStart}")
+	print(f"SCOREMODE:2")
+	print(f"COURSE:Dan")
+	print(f"LEVEL:10")
+	print(f"BPM:{charts[0].bpm}")
+	# Balloons here
+	for gid in globalIndexes:
+		print(f"EXAM{gid + 1}:{exams[gid].Parts[0].examType},{exams[gid].Parts[0].redPass},{exams[gid].Parts[0].goldPass},{exams[gid].Parts[0].examRange}")
 	
 	#print(charts[0].raw)
 	
