@@ -19,7 +19,7 @@ This osu2tja version aims to fix the multiple bugs contained within the original
 
 - Usage :
 ```
-python osu2tja.py [[file] [diff]] ...
+python osu2tja.py -i [[file] [diff]] ...
         diff sets :
                 osu2tja [oni[file] [diff]] (Oni only set)
                 osu2tja [oni[file] [diff]] [ura oni[file] [diff]] (Oni + ura set)
@@ -31,7 +31,7 @@ python osu2tja.py [[file] [diff]] ...
 
 ```
 # Oni only set, 8 stars
-python osu2tja.py Oni.osu 8
+python osu2tja.py -i Oni.osu 8
 # UraOmote set, Oni 6 stars Ura 9 stars 
-python osu2tja.py Oni.osu 6 Ura.osu 9
+python osu2tja.py -i Oni.osu 6 Ura.osu 9
 ```
