@@ -38,4 +38,15 @@ python osu2tja.py -i Oni.osu 6 Ura.osu 9
 
 ## Dan chart maker
 
-Currently in development, don't use for the moment.
+### General informations
+
+Small script to automatize the Dan chart creation process.
+
+- Language : Python 3
+
+- Usage :
+```
+# Put the .tja charts first in the script's folder
+python3 danChartMaker.py 1> output.tja
+# Follow the instructions to setup your Dan chart creation
+```

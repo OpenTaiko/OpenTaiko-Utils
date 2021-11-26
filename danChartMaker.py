@@ -81,7 +81,10 @@ class Difficulty:
 		
 		# Balloon
 		bpattern = re.compile(r"^BALLOON:(\S+)", re.MULTILINE)
-		self.balloon = re.findall(bpattern, contents)[0]
+		bmatch = re.findall(bpattern, contents)
+		self.balloon = ""
+		if (len(bmatch) > 0):
+			self.balloon = re.findall(bpattern, contents)[0]
 		
 		# Body
 		bdpattern = re.compile(r"^#START((?:.|\n(?!#END))*)", re.MULTILINE)
@@ -258,7 +261,7 @@ if __name__ == "__main__":
 	
 	# Dan ticks
 	eprint("// Enter the DANTICK value [0-5] : ")
-	danTick = clamp(1, int(input()), 5)
+	danTick = clamp(0, int(input()), 5)
 	eprint("// Enter the DANTICKCOLOR string following the hex rgb format (Default : #ffffff) : ")
 	danColor = input()
 	if (danColor == ""):
