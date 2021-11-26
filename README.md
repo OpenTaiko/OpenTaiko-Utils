@@ -35,3 +35,7 @@ python osu2tja.py -i Oni.osu 8
 # UraOmote set, Oni 6 stars Ura 9 stars 
 python osu2tja.py -i Oni.osu 6 Ura.osu 9
 ```
+
+## Dan chart maker
+
+Currently in development, don't use for the moment.
