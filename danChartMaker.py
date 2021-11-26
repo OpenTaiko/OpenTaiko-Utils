@@ -227,6 +227,34 @@ if __name__ == "__main__":
 			if (charts[i].difficulties[j] is not None):
 				eprint(f"// {j} - {charts[i].difficulties[j].starRating} stars")
 		difficulties.append(clamp(1, int(input()), 5))
+		
+	# Individual Exams
+	for i in nonGlobalIndexes:
+		eprint(f"// Enter the exam {i + 1} type : ")
+		eprint("// 1 : Perfect count")
+		eprint("// 2 : Good count")
+		eprint("// 3 : Bad count")
+		eprint("// 4 : Score")
+		eprint("// 5 : Rolls")
+		eprint("// 6 : Hit notes")
+		eprint("// 7 : Combo")
+		eprint("// 8 : Accuracy")
+		tmp = clamp(1, int(input()), 8)
+		exams[i].Parts[0].examType = ExamTypesDict[tmp]
+		eprint(f"// Enter the exam {i + 1} range : ")
+		eprint("// 1 : More")
+		eprint("// 2 : Less")
+		tmp = clamp(1, int(input()), 2)
+		exams[i].Parts[0].examRange = ExamRangeDict[tmp]
+		for j in range(songCount):
+			eprint(f"// [Song {j} individual] Enter the exam {i + 1} red condition [0-[ : ")
+			exams[i].Parts[j].redPass = clamp(0, int(input()), 999999)
+			if (exams[i].Parts[0].examRange == "m"):
+				eprint(f"// [Song {j} individual] Enter the exam {i + 1} gold condition [{exams[i].Parts[j].redPass}-[ : ")
+				exams[i].Parts[j].goldPass = clamp(exams[i].Parts[j].redPass, int(input()), 999999)
+			else:
+				eprint(f"// [Song {j} individual] Enter the exam {i + 1} gold condition [0-{exams[i].Parts[j].redPass}] : ")
+				exams[i].Parts[j].goldPass = clamp(0, exams[i].Parts[j].redPass, int(input()))
 	
 	# Dan ticks
 	eprint("// Enter the DANTICK value [0-5] : ")
@@ -247,11 +275,11 @@ if __name__ == "__main__":
 	print(f"COURSE:Dan")
 	print(f"LEVEL:10")
 	print(f"BPM:{charts[0].bpm}")
-	for dif in difficulties:
-		if (balloonsContent != "" and charts[i].difficulties[j].balloon != ""):
-			balloonsContent += "," + charts[i].difficulties[j].balloon
+	for i in range(songCount):
+		if (balloonsContent != "" and charts[i].difficulties[difficulties[i]].balloon != ""):
+			balloonsContent += "," + charts[i].difficulties[difficulties[i]].balloon
 		else:
-			balloonsContent += charts[i].difficulties[j].balloon
+			balloonsContent += charts[i].difficulties[difficulties[i]].balloon
 	print(balloons + balloonsContent)
 	for gid in globalIndexes:
 		print(f"EXAM{gid + 1}:{exams[gid].Parts[0].examType},{exams[gid].Parts[0].redPass},{exams[gid].Parts[0].goldPass},{exams[gid].Parts[0].examRange}")
@@ -267,7 +295,9 @@ if __name__ == "__main__":
 		print(f"#MEASURE 4/4")
 		print(f"#SCROLL 1.0")
 		print(f"#DELAY {charts[i].offset}")
-		# Individual exams here
+		# Individual exams
+		for ngid in nonGlobalIndexes:
+			print(f"EXAM{ngid + 1}:{exams[ngid].Parts[0].examType},{exams[ngid].Parts[i].redPass},{exams[ngid].Parts[i].goldPass},{exams[ngid].Parts[0].examRange}")
 		print(charts[i].difficulties[difficulties[i]].body)
 	
 	print("#END")
