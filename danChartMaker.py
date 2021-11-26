@@ -219,8 +219,18 @@ if __name__ == "__main__":
 		else:
 			nonGlobalIndexes.append(i)
 	
-	# Display Header
+	# Choose difficulties
+	difficulties = []
+	for i in range(songCount):
+		eprint(f"// Enter the Selected difficulty for the song {charts[i].title} : ")
+		for j in range(5):
+			if (charts[i].difficulties[j] is not None):
+				eprint(f"// {j} - {charts[i].difficulties[j].starRating} stars")
+		difficulties.append(clamp(1, int(input()), 5))
 	
+	# Display Header
+	balloons = "BALLOON:"
+	balloonsContent = ""
 	print(f"TITLE:{chartName}")
 	print(f"BPM:{charts[0].bpm}")
 	print(f"WAVE:{charts[0].wave}")
@@ -229,7 +239,12 @@ if __name__ == "__main__":
 	print(f"COURSE:Dan")
 	print(f"LEVEL:10")
 	print(f"BPM:{charts[0].bpm}")
-	# Balloons here
+	for dif in difficulties:
+		if (balloonsContent != "" and charts[i].difficulties[j].balloon != ""):
+			balloonsContent += "," + charts[i].difficulties[j].balloon
+		else:
+			balloonsContent += charts[i].difficulties[j].balloon
+	print(balloons + balloonsContent)
 	for gid in globalIndexes:
 		print(f"EXAM{gid + 1}:{exams[gid].Parts[0].examType},{exams[gid].Parts[0].redPass},{exams[gid].Parts[0].goldPass},{exams[gid].Parts[0].examRange}")
 	
