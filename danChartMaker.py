@@ -228,6 +228,14 @@ if __name__ == "__main__":
 				eprint(f"// {j} - {charts[i].difficulties[j].starRating} stars")
 		difficulties.append(clamp(1, int(input()), 5))
 	
+	# Dan ticks
+	eprint("// Enter the DANTICK value [0-5] : ")
+	danTick = clamp(1, int(input()), 5)
+	eprint("// Enter the DANTICKCOLOR string following the hex rgb format (Default : #ffffff) : ")
+	danColor = input()
+	if (danColor == ""):
+		danColor = "#ffffff"
+	
 	# Display Header
 	balloons = "BALLOON:"
 	balloonsContent = ""
@@ -247,6 +255,20 @@ if __name__ == "__main__":
 	print(balloons + balloonsContent)
 	for gid in globalIndexes:
 		print(f"EXAM{gid + 1}:{exams[gid].Parts[0].examType},{exams[gid].Parts[0].redPass},{exams[gid].Parts[0].goldPass},{exams[gid].Parts[0].examRange}")
+	print(f"DANTICK:{danTick}")
+	print(f"DANTICKCOLOR:{danColor}")
 	
-	#print(charts[0].raw)
+	# Process charts
+	print("#START")
+	
+	for i in range(songCount):
+		print(f"#NEXTSONG {charts[i].title},{charts[i].subtitle},,{charts[i].wave},350,80,{charts[i].difficulties[difficulties[i]].starRating},{difficulties[i]}")
+		print(f"#BPMCHANGE {charts[i].bpm}")
+		print(f"#MEASURE 4/4")
+		print(f"#SCROLL 1.0")
+		print(f"#DELAY {charts[i].offset}")
+		# Individual exams here
+		print(charts[i].difficulties[difficulties[i]].body)
+	
+	print("#END")
 	
