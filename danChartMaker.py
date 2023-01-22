@@ -144,7 +144,7 @@ class Chart:
 
 if __name__ == "__main__":
 	
-	sys.stdout = codecs.getwriter("shift-jis")(sys.stdout.detach())
+	sys.stdout = codecs.getwriter("utf-8-sig")(sys.stdout.detach())
 
 	# Header
 	print("// ===== Made using 0AuBSQ's Dan Chart Maker =====\n")
@@ -160,7 +160,7 @@ if __name__ == "__main__":
 	for i in range(songCount):
 		eprint(f'// Enter the chart {i + 1} file name : ')
 		fileName = input()
-		with open(os.path.join(sys.path[0], fileName), "r", encoding="shift-jis") as f:
+		with open(os.path.join(sys.path[0], fileName), "r", encoding="utf-8-sig") as f:
 			charts.append(Chart(f.read()))
 			
 	# Chart preprocessing
@@ -297,11 +297,13 @@ if __name__ == "__main__":
 		print(f"#BPMCHANGE {charts[i].bpm}")
 		print(f"#MEASURE 4/4")
 		print(f"#SCROLL 1.0")
+		print(f"#BARLINEON")
 		print(f"#DELAY {charts[i].offset}")
 		# Individual exams
 		for ngid in nonGlobalIndexes:
 			print(f"EXAM{ngid + 1}:{exams[ngid].Parts[0].examType},{exams[ngid].Parts[i].redPass},{exams[ngid].Parts[i].goldPass},{exams[ngid].Parts[0].examRange}")
 		print(charts[i].difficulties[difficulties[i]].body)
+		print(f",")
 	
 	print("#END")
 	
